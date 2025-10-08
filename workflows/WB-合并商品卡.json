@@ -1,0 +1,242 @@
+{
+  "name": "WB-合并商品卡",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        -448
+      ],
+      "id": "fa2c42a2-b4a7-470e-86f3-7298bb62bb99",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst data = {\n  \"targetIMT\": 123,\n  \"nmIDs\": [\n    837459235,\n    828572090\n  ]\n} \n   \nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -520
+      ],
+      "id": "1ae578e2-57bf-4451-8d6b-7d2bdc63affa",
+      "name": "Code",
+      "notes": "0 — 仅显示无照片的卡片 \n1 — 仅显示有照片的卡片 \n-1 — 所有卡片  -1 — all cards"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        -448
+      ],
+      "id": "f283bebb-b22b-414a-9161-bc1ecc44a943",
+      "name": "Wait1",
+      "webhookId": "0d7f8802-4ae9-486b-ae4d-9cfb5c52e00a"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -16,
+        -448
+      ],
+      "id": "40aec639-fb42-4ea1-8186-009d6e697209",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://content-api.wildberries.ru/content/v2/cards/moveNm",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "locale",
+              "value": "zh"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        432,
+        -520
+      ],
+      "id": "9bee15a9-7711-4028-8c4b-6640c459a733",
+      "name": "合并商品卡",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "OKRXee20oeCjv4LI",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -448
+      ],
+      "id": "042292c1-514f-4ee2-9189-7f757607328b",
+      "name": "Add1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fileSelector": "=D:/WB/WB-cards-add.xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        -448
+      ],
+      "id": "99325fdd-5470-44d2-b436-e32d8a7bc65f",
+      "name": "需要合并的SKU",
+      "executeOnce": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// 获取所有输入项\nconst allItems = $input.all();\n\n// 使用 reduce 方法合并对象\nconst mergedData = allItems.reduce((acc, item) => {\n  const targetIMT = item.json.targetIMT;\n  const nmID = item.json.nmIDs;\n  \n  // 查找是否已有相同 targetIMT 的对象\n  const existing = acc.find(i => i.targetIMT === targetIMT);\n  \n  if (existing) {\n    // 如果已存在，添加到 nmIDs 数组\n    existing.nmIDs.push(nmID);\n  } else {\n    // 如果不存在，创建新对象\n    acc.push({\n      targetIMT: targetIMT,\n      nmIDs: [nmID]\n    });\n  }\n  \n  return acc;\n}, []);\n\n// 返回结果\nreturn mergedData.map(item => {\n  return {\n    json: item\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -272,
+        -448
+      ],
+      "id": "d1a5ccdd-28ed-4e4b-8dcc-f6227c47d509",
+      "name": "Code3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "需要合并的SKU",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "合并商品卡",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "合并商品卡": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add1": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "需要合并的SKU": {
+      "main": [
+        [
+          {
+            "node": "Add1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "0f88e792-52e0-4ab9-a1af-dcb4de708119",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "813df840f8d8f3be08f78ac4a14f8d1d048938b8bcf66319cb91a6c027cfb057"
+  },
+  "id": "1BEbIpWc4Ogbcx1y",
+  "tags": []
+}
