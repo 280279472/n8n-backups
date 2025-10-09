@@ -1,0 +1,499 @@
+{
+  "createdAt": "2025-10-09T16:11:02.899Z",
+  "updatedAt": "2025-10-09T16:11:02.899Z",
+  "id": "JdTHcdbsOmXXr6kh",
+  "name": "Restore workflows from GitHub",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18dc3ecc-c1c7-4197-9268-3898636323bc",
+              "name": "github_owner",
+              "type": "string",
+              "value": "duynb92"
+            },
+            {
+              "id": "b3778554-4200-4e51-842a-dfca05be4f85",
+              "name": "repo_name",
+              "type": "string",
+              "value": "n8n-workflows"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "41e73c74-1483-40ce-a12b-fa6cd9cbea82",
+      "name": "Define Local Variables",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        320,
+        128
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "owner": {
+          "__rl": true,
+          "value": "280279472",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-backups",
+          "mode": "list",
+          "cachedResultName": "n8n-backups",
+          "cachedResultUrl": "https://github.com/280279472/n8n-backups"
+        },
+        "events": [
+          "pull_request"
+        ],
+        "options": {}
+      },
+      "id": "3c2379cb-3350-4d4d-9a8c-06cebd4ca3b1",
+      "name": "Github Trigger - When there is new pull request",
+      "type": "n8n-nodes-base.githubTrigger",
+      "position": [
+        112,
+        128
+      ],
+      "webhookId": "4152c250-0d25-4a1b-8064-1d170c527daf",
+      "typeVersion": 1,
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "EAaPqiVyXgIs8Gv1",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "7f447d9f-6a55-4c4c-b9c5-d1f5b5fb1476",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $('Github Trigger - When there is new pull request').item.json.body.action }}",
+              "rightValue": "closed"
+            },
+            {
+              "id": "ab94d15e-ee80-4f78-8a1a-b9db0c2161ec",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "leftValue": "={{ $('Github Trigger - When there is new pull request').item.json.body.pull_request.merged }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3501a223-46e1-468d-9ce4-f4c6f6242c63",
+      "name": "Check if trigger event is pull request merged",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        544,
+        128
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $('Define Local Variables').item.json.github_owner }}/{{ $('Define Local Variables').item.json.repo_name }}/commits/{{ $('Github Trigger - When there is new pull request').item.json.body.pull_request.merge_commit_sha }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "options": {}
+      },
+      "id": "93b02c9e-c19c-46a0-a7d5-557b057f64a3",
+      "name": "Fetch merged commit details via GitHub API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        768,
+        128
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "files",
+        "options": {}
+      },
+      "id": "a34702dc-8bdc-4aef-a2c6-c1c0d99c4d8b",
+      "name": "Get files changes details",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        992,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "cd4529cc-cf44-4fd9-aa27-49a5557a40ca",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "modified"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2f50d699-9b62-4426-86c2-e4fd8371c879",
+      "name": "Filter modified workflows",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        1200,
+        32
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "b4d2e160-478b-45e0-ba5d-ea72c2f6d430",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "added"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9a09f4aa-9b5b-4c9f-a82e-dcb672d86230",
+      "name": "Filter created workflows",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        1200,
+        224
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Define Local Variables').item.json.github_owner }}"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Define Local Variables').item.json.repo_name }}"
+        },
+        "filePath": "={{ $json.filename }}",
+        "asBinaryProperty": false,
+        "additionalParameters": {}
+      },
+      "id": "05d7c6c3-ca65-4084-82d8-fd89c0feec3a",
+      "name": "Fetch workflow content from Git",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1424,
+        224
+      ],
+      "webhookId": "afd9f010-9707-4778-bc4a-d933198d8727",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Define Local Variables').item.json.github_owner }}"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Define Local Variables').item.json.repo_name }}"
+        },
+        "filePath": "={{ $json.filename }}",
+        "asBinaryProperty": false,
+        "additionalParameters": {}
+      },
+      "id": "9d9bf30d-f892-4026-9f76-1fd0a9f20559",
+      "name": "Fetch workflow content from Git1",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1424,
+        32
+      ],
+      "webhookId": "afd9f010-9707-4778-bc4a-d933198d8727",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{  $json.content.base64Decode() }}",
+        "options": {}
+      },
+      "id": "39ff10f3-8da7-42ff-8e63-57ff56251ede",
+      "name": "Decode workflow content to json",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1648,
+        32
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{  $json.content.base64Decode() }}",
+        "options": {}
+      },
+      "id": "7e889b0c-9857-4025-9a98-6aeec4592ff4",
+      "name": "Decode workflow content to json1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1648,
+        224
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "workflowObject": "={{ $json.toJsonString() }}",
+        "requestOptions": {}
+      },
+      "id": "8fe26bdc-e23a-462e-83f3-9e2c6cc06a30",
+      "name": "Update workflow in n8n",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        1872,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "workflowObject": "={{ $json.toJsonString()  }}",
+        "requestOptions": {}
+      },
+      "id": "724b913e-cdc3-4cf3-9039-4e9b555d745e",
+      "name": "Create new workflow in n8n",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        1872,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Setup\n\n1. **Connect GitHub**: Use the `GitHub Trigger` node and configure GitHub API credentials.\nNote: I'd recommended to use *GitHub PAT (Personal Access Token) classic* with `repo` and `admin:repo_hook` permission scopes enabled.\n2. **Connect n8n API**: Provide your n8n API credentials in the `n8n` nodes. - [Check this doc](https://docs.n8n.io/api/authentication/)\n3. **Set repository variables**: Update `github_owner` and `repo_name` in the **Define Local Variables** node.\n4. **Enable webhook**: Make sure your GitHub repository has a webhook for `pull_request` events pointing to this workflow.",
+        "height": 320,
+        "width": 420
+      },
+      "id": "8539dde6-547c-4d1f-8b1f-def135007abd",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -80,
+        -256
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Define Local Variables": {
+      "main": [
+        [
+          {
+            "node": "Check if trigger event is pull request merged",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter created workflows": {
+      "main": [
+        [
+          {
+            "node": "Fetch workflow content from Git",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter modified workflows": {
+      "main": [
+        [
+          {
+            "node": "Fetch workflow content from Git1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get files changes details": {
+      "main": [
+        [
+          {
+            "node": "Filter modified workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter created workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decode workflow content to json": {
+      "main": [
+        [
+          {
+            "node": "Update workflow in n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch workflow content from Git": {
+      "main": [
+        [
+          {
+            "node": "Decode workflow content to json1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decode workflow content to json1": {
+      "main": [
+        [
+          {
+            "node": "Create new workflow in n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch workflow content from Git1": {
+      "main": [
+        [
+          {
+            "node": "Decode workflow content to json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch merged commit details via GitHub API": {
+      "main": [
+        [
+          {
+            "node": "Get files changes details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if trigger event is pull request merged": {
+      "main": [
+        [
+          {
+            "node": "Fetch merged commit details via GitHub API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Github Trigger - When there is new pull request": {
+      "main": [
+        [
+          {
+            "node": "Define Local Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "8eb257c8-7e46-4d2b-b958-ebd34654c567",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-09T16:11:02.910Z",
+      "updatedAt": "2025-10-09T16:11:02.910Z",
+      "role": "workflow:owner",
+      "workflowId": "JdTHcdbsOmXXr6kh",
+      "projectId": "xHmqnCOXuqzbutmT"
+    }
+  ],
+  "tags": []
+}
