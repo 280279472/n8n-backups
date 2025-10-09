@@ -1,19 +1,19 @@
 {
-  "createdAt": "2025-10-09T14:12:28.651Z",
-  "updatedAt": "2025-10-09T14:16:27.000Z",
-  "id": "ykLMI31Jm7miEoFH",
+  "createdAt": "2025-10-08T16:28:49.867Z",
+  "updatedAt": "2025-10-08T16:37:29.000Z",
+  "id": "0Cy04HeC2ZjcKqpO",
   "name": "WB04-创建商品卡",
   "active": false,
   "isArchived": false,
   "nodes": [
     {
       "parameters": {},
-      "id": "46149350-3f32-4a03-b65d-06803a649b6c",
+      "id": "735313a2-133d-427c-bca1-1412812b7b30",
       "name": "When clicking \"Test workflow\"",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        -1696,
-        -16
+        -4288,
+        640
       ],
       "typeVersion": 1
     },
@@ -26,10 +26,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1472,
-        -16
+        -4064,
+        640
       ],
-      "id": "f65ee88f-8f39-4b6e-91c2-2d9f8d43b626",
+      "id": "5d4d2754-303e-444a-a26c-80059dd302d8",
       "name": "基础数据"
     },
     {
@@ -42,10 +42,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1248,
-        -16
+        -3856,
+        640
       ],
-      "id": "10312f6b-80eb-4d01-9a9d-a5064e8b319d",
+      "id": "920d88c5-6962-464a-a906-d9b2769c668f",
       "name": "验证指令",
       "alwaysOutputData": false,
       "credentials": {
@@ -83,10 +83,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1024,
-        -16
+        -3632,
+        640
       ],
-      "id": "2d10d796-7703-4b9c-91eb-abb67740b211",
+      "id": "cc28a057-28a6-4c85-bbd8-c8507d126316",
       "name": "If2"
     },
     {
@@ -96,10 +96,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        96,
-        -16
+        -2368,
+        640
       ],
-      "id": "4913266b-14dc-4083-b6aa-5d402e141b41",
+      "id": "07218456-8cc4-4ea7-9748-d610bc04ec21",
       "name": "Code1",
       "executeOnce": false,
       "alwaysOutputData": true,
@@ -107,17 +107,40 @@
     },
     {
       "parameters": {
+        "method": "POST",
+        "url": "https://content-api.wildberries.ru/content/v2/cards/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[{{ $json.toJsonString() }}]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        592,
+        704
+      ],
+      "id": "14bd2e2b-4f18-4a81-9519-0324b5e6f051",
+      "name": "HTTP Request2",
+      "retryOnFail": false,
+      "alwaysOutputData": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
         "content": "## 添加商品卡\n",
-        "height": 436,
+        "height": 500,
         "width": 3860
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        624,
-        -288
+        -1744,
+        608
       ],
-      "id": "6c4c7320-2d15-4cc0-a777-d95cf98240be",
+      "id": "aac02c1b-d19d-40e0-b691-c580ebad8415",
       "name": "Sticky Note"
     },
     {
@@ -127,23 +150,23 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        544,
-        -16
+        -1664,
+        656
       ],
-      "id": "eef6baf0-abe1-4b9c-b47b-85e69fbd599d",
+      "id": "dd2133d8-99b7-4a63-834d-c807487be5fd",
       "name": "Loop Over Items2"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst title =  $('AI Agent').first().json.output.length<58? $('AI Agent').first().json.output:\"Футболка с принтом оверсайз\"\nconst data= [\n    {\n        \"subjectID\": 192,\n        \"variants\": [\n            {\n                \"vendorCode\": $('Loop Over Items2').first().json.SKU,\n                \"title\": title,\n                \"description\": \"Футболка с принтом оверсайз и коротким рукавом изготовлена из 100% хлопкового трикотажа полотняного переплетения, обеспечивая комфорт и долговечность. Дышащая и гипоаллергенная ткань создает идеальный силуэт в унисекс-стиле.\\nТехнология термопечати открывает безграничные возможности для дизайна принтов. Каждая футболка становится носимым холстом для искусства — от абстрактных линий до культовых образов, превращая базовую модель в инструмент самовыражения.\\nПремиальный хлопок гарантирует износостойкость: принты сохраняют яркость после многократных стирок. Универсальный крой и яркий принт делают её ключевым элементом гардероба, позволяя создавать модные образы с джинсами, шортами или юбками.\\nПодходит для любого сезона и повода: повседневная носка, спорт или отдых. Идеальный подарок подросткам и взрослым на День рождения, 14 февраля, 23 февраля, 8 Марта и Новый год.\\nРазмеры: S-4XL\\nКак выбрать:\\n\\nИзмерьте ширину груди любимой футболки\\nСм. таблицу размеров в галерее\\nДля oversize эффекта берите на размер больше\\n\\nВнимание: Цвет принта на экране может незначительно отличаться от реального.\\nУход:\\n\\nСтирка при ≤30°C, цветным порошком\\nОтжим на низких оборотах\\nНе отбеливать, не химчистить, не сушить в машине\\nГладить с изнанки на низкой температуре\",\n                \"dimensions\": {\n                    \"width\": 25,\n                    \"height\": 2,\n                    \"length\": 35,\n                    \"weightBrutto\": 0.22\n                },\n                \"characteristics\": [\n                    {\n                        \"id\": 14177449,\n                        \"name\": \"颜色\",\n                        \"value\": [\n                          $('Loop Over Items2').first().json.color\n                        ]\n                    },\n                    {\n                        \"id\": 15000001,\n                        \"name\": \"FEACN\",\n                        \"value\": [\n                            \"6110309100\"\n                        ]\n                    },\n                   {\n                      \"id\": 12,\n                      \"name\": \"图画\",\n                      \"value\": [\n                        \"печатный рисунок\"\n                      ]\n                    },\n                    {\n                      \"id\": 378533,\n                      \"name\": \"配套\",\n                      \"value\": [\n                        \"Футболка с круглым вырезом- 1 шт.\"\n                      ]\n                    },\n                    {\n                      \"id\": 6,\n                      \"name\": \"领口\",\n                      \"value\": [\n                        \"круглый\"\n                      ]\n                    },\n                    {\n                      \"id\": 48,\n                      \"name\": \"口袋类型\",\n                      \"value\": [\n                        \"без кармановбез карманов\"\n                      ]\n                    },\n                    {\n                      \"id\": 11,\n                      \"name\": \"风格\",\n                      \"value\": [\n                        \"оверсайз\"\n                      ]\n                    },\n                    {\n                      \"id\": 11892,\n                      \"name\": \"物品保养\",\n                      \"value\": [\n                        \"стирка при t не более 40°C\",\n                        \"гладить при t не более 130°C\"\n                      ]\n                    },\n                    {\n                      \"id\": 23771,\n                      \"name\": \"模型特点\",\n                      \"value\": [\n                        \"дышащий материал\",\n                        \"гипоаллергенный материал\",\n                        \"унисекс\"\n                      ]\n                    },\n                    {\n                      \"id\": 14177450,\n                      \"name\": \"组成\",\n                      \"value\": [\n                        \"хлопок\"\n                      ]\n                    }\n                ],\n                \"sizes\": [\n                    {\n                        \"techSize\": \"S\",\n                        \"wbSize\": \"44\",\n                        \"skus\": [\n                            $input.first().json.data[0]                        \n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"M\",\n                        \"wbSize\": \"46\",\n                        \"skus\": [\n                              $input.first().json.data[1]\n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"L\",\n                        \"wbSize\": \"48\",\n                        \"skus\": [\n                              $input.first().json.data[2] \n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"XL\",\n                        \"wbSize\": \"50\",\n                        \"skus\": [\n                             $input.first().json.data[3]\n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"2XL\",\n                        \"wbSize\": \"52\",\n                        \"skus\": [\n                             $input.first().json.data[4]\n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"chrtID\": 701150258,\n                        \"techSize\": \"3XL\",\n                        \"wbSize\": \"54\",\n                        \"skus\": [\n                             $input.first().json.data[5]\n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"4XL\",\n                        \"wbSize\": \"56\",\n                        \"skus\": [\n                             $input.first().json.data[6]\n                        ],\n                        \"price\": 300\n                    }\n                ],\n        \t\t\"sizeChartID\": \"74168\",\n                \"sizeChartName\":\"尺寸表 2\"\n            }\n        ]\n    }\n]\n\n\nreturn data;"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nconst data= [\n    {\n        \"subjectID\": 192,\n        \"variants\": [\n            {\n                \"vendorCode\": $('Loop Over Items2').first().json.SKU,\n                \"title\": $('AI Agent').first().json.output,\n                \"description\": \"Футболка с круглым вырезом и коротким рукавом изготовлена из 100% хлопкового трикотажа полотняного переплетения, обеспечивая комфорт и долговечность. Дышащая и гипоаллергенная ткань создает идеальный силуэт в унисекс-стиле.\\nТехнология термопечати открывает безграничные возможности для дизайна принтов. Каждая футболка становится носимым холстом для искусства — от абстрактных линий до культовых образов, превращая базовую модель в инструмент самовыражения.\\nПремиальный хлопок гарантирует износостойкость: принты сохраняют яркость после многократных стирок. Универсальный крой и яркий принт делают её ключевым элементом гардероба, позволяя создавать модные образы с джинсами, шортами или юбками.\\nПодходит для любого сезона и повода: повседневная носка, спорт или отдых. Идеальный подарок подросткам и взрослым на День рождения, 14 февраля, 23 февраля, 8 Марта и Новый год.\\nРазмеры: S-4XL\\nКак выбрать:\\n\\nИзмерьте ширину груди любимой футболки\\nСм. таблицу размеров в галерее\\nДля oversize эффекта берите на размер больше\\n\\nВнимание: Цвет принта на экране может незначительно отличаться от реального.\\nУход:\\n\\nСтирка при ≤30°C, цветным порошком\\nОтжим на низких оборотах\\nНе отбеливать, не химчистить, не сушить в машине\\nГладить с изнанки на низкой температуре\",\n                \"dimensions\": {\n                    \"width\": 25,\n                    \"height\": 2,\n                    \"length\": 35,\n                    \"weightBrutto\": 0.22\n                },\n                \"characteristics\": [\n                    {\n                        \"id\": 14177449,\n                        \"name\": \"颜色\",\n                        \"value\": [\n                          $('Loop Over Items2').first().json.color\n                        ]\n                    },\n                    {\n                        \"id\": 15000001,\n                        \"name\": \"FEACN\",\n                        \"value\": [\n                            \"6110309100\"\n                        ]\n                    }\n                ],\n                \"sizes\": [\n                    {\n                        \"techSize\": \"S\",\n                        \"wbSize\": \"44\",\n                        \"skus\": [\n                            $input.first().json.data[0]                        \n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"M\",\n                        \"wbSize\": \"46\",\n                        \"skus\": [\n                              $input.first().json.data[1]\n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"L\",\n                        \"wbSize\": \"48\",\n                        \"skus\": [\n                              $input.first().json.data[2] \n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"XL\",\n                        \"wbSize\": \"50\",\n                        \"skus\": [\n                             $input.first().json.data[3]\n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"2XL\",\n                        \"wbSize\": \"52\",\n                        \"skus\": [\n                             $input.first().json.data[4]\n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"chrtID\": 701150258,\n                        \"techSize\": \"3XL\",\n                        \"wbSize\": \"54\",\n                        \"skus\": [\n                             $input.first().json.data[5]\n                        ],\n                        \"price\": 300\n                    },\n                    {\n                        \"techSize\": \"4XL\",\n                        \"wbSize\": \"56\",\n                        \"skus\": [\n                             $input.first().json.data[6]\n                        ],\n                        \"price\": 300\n                    }\n                ],\n        \t\t\"sizeChartID\": \"74168\"\n            }\n        ]\n    }\n]\n\n\nreturn data;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2912,
-        -16
+        384,
+        704
       ],
-      "id": "c355fbbe-8cdb-4f1a-8ea1-36e40678c664",
+      "id": "f2448545-e7ef-4c6a-bd17-7ad6b678e84e",
       "name": "Code6"
     },
     {
@@ -160,19 +183,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2688,
-        -16
+        192,
+        704
       ],
-      "id": "88a1754c-c21f-45cb-812d-d1736b2b738e",
+      "id": "6c1cbacd-ceb4-4157-bd56-f11bc34db1d4",
       "name": "获取条形码",
       "retryOnFail": true,
-      "maxTries": 5,
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "Q1Z0EXSyJn6ojM4C",
-          "name": "WB04"
-        }
-      }
+      "maxTries": 5
     },
     {
       "parameters": {
@@ -181,10 +198,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        4480,
-        -16
+        1872,
+        704
       ],
-      "id": "c14cf51d-fc0a-4e44-bda5-fbf26f85a049",
+      "id": "efe989f5-d86f-400c-9bdd-93e1ec042925",
       "name": "Wait",
       "webhookId": "86892516-c2fe-4c6a-a1af-227c569caa64"
     },
@@ -196,10 +213,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        4032,
-        -144
+        1392,
+        704
       ],
-      "id": "bea37b02-f1e7-4d77-bcaa-f57b87b636c3",
+      "id": "9d8f36f5-e2f7-4790-ac22-d1890a8b05cc",
       "name": "Convert to File1"
     },
     {
@@ -210,10 +227,10 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        3584,
-        -144
+        992,
+        704
       ],
-      "id": "9c373a58-e2cb-4cea-b743-ea7dfca21404",
+      "id": "693d9cf8-dff1-46a3-9f12-16f8fdf73088",
       "name": "已经修改的数据2",
       "alwaysOutputData": true
     },
@@ -224,10 +241,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3808,
-        -144
+        1184,
+        704
       ],
-      "id": "b3f8671a-3ac4-447b-8c17-a7646ed9fe1e",
+      "id": "87194ee8-c28c-4590-af6f-7171e11e89ae",
       "name": "Code10"
     },
     {
@@ -238,10 +255,10 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -576,
-        -16
+        -3184,
+        640
       ],
-      "id": "48b42697-09d7-4f0d-9889-26401765feae",
+      "id": "6bb8f213-5691-4fc1-b2e6-8f7bfd5bc4c1",
       "name": "Add",
       "alwaysOutputData": true
     },
@@ -253,10 +270,10 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -128,
-        -16
+        -2608,
+        640
       ],
-      "id": "202e09c6-9a01-42e0-bdd1-9dea5a25597d",
+      "id": "84379431-99a0-4d78-a701-1fa94c879bb2",
       "name": "Add2",
       "alwaysOutputData": true
     },
@@ -268,10 +285,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        -800,
-        -16
+        -3408,
+        640
       ],
-      "id": "ca984e6a-08a5-4eb3-9a2d-16ae53659792",
+      "id": "0fea153f-090e-4596-bd4f-bf7a2b93e826",
       "name": "准备添加的",
       "executeOnce": true,
       "alwaysOutputData": true,
@@ -286,10 +303,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        -352,
-        -16
+        -2896,
+        640
       ],
-      "id": "a9bf460c-33fe-4c1e-843b-dbc593da30ae",
+      "id": "82f2cc65-8c53-480c-b971-282f1205024f",
       "name": "已经添加的",
       "executeOnce": true,
       "alwaysOutputData": true,
@@ -324,10 +341,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        320,
-        -16
+        -2144,
+        640
       ],
-      "id": "2cde12e8-592f-48d2-a612-07ef509dbe88",
+      "id": "86866f8c-554a-48e0-a23d-5f5ce65a1604",
       "name": "If"
     },
     {
@@ -338,10 +355,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1440,
-        -16
+        -848,
+        1248
       ],
-      "id": "6d3d7c88-5e02-48e6-934c-46269b31ee25",
+      "id": "c5f83259-b09a-444d-ad2e-ed7e45cecd50",
       "name": "读取图片",
       "alwaysOutputData": true
     },
@@ -370,25 +387,25 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2112,
-        -16
+        -304,
+        1216
       ],
-      "id": "aeb3db3a-3c86-467b-9a60-1621101658c9",
+      "id": "7f685fde-adef-4270-bf6c-f1c8efafb0fc",
       "name": "Qwen-VL-Plus 视觉问答"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=指令：\n根据以下图片分析，生成一个俄语商品标题。\n分析结果： {{ $json.choices[0].message.content }}\n标题要求：\n1.以“Футболка с принтом”开头。\n2.总字符数含空格控制在47字符以内,不包含符号（.\"\" :）。\n3.只描述印花风格和主题，内容精简。\n4.输出仅为最终标题。",
+        "text": "=指令：\n根据以下图片分析，生成一个俄语商品标题。\n分析结果： {{ $json.choices[0].message.content }}\n标题要求：\n1.以“Футболка с принтом”开头。\n2.总字符数含空格严格在48字符内,不包含符号（.\"\" :）。\n3.只描述印花风格和主题，内容精简。\n4.输出仅为最终标题。",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2,
       "position": [
-        2336,
-        -16
+        -112,
+        1200
       ],
-      "id": "86f099fe-d502-4873-a65d-179744da8846",
+      "id": "f53808a8-9955-4a98-aa85-bfe601408e71",
       "name": "AI Agent"
     },
     {
@@ -398,29 +415,23 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
       "typeVersion": 1,
       "position": [
-        2400,
-        208
+        -96,
+        1376
       ],
-      "id": "24b7d54f-1d85-45c4-962f-9998f36bd93b",
-      "name": "DeepSeek Chat Model",
-      "credentials": {
-        "deepSeekApi": {
-          "id": "pntlShHZzgeLWkb6",
-          "name": "DeepSeek account"
-        }
-      }
+      "id": "48263013-82de-4ca1-863d-474bc1388273",
+      "name": "DeepSeek Chat Model"
     },
     {
       "parameters": {
-        "jsCode": " \n// 从上一个节点获取二进制图片数据\nconst imageBinary =$input.first().binary.data;\n\nif (!imageBinary) {\n  throw new Error(\"没有获取到图片数据，请检查上一个节点的配置\");\n}\n\n// 获取图片MIME类型\nconst mimeType = imageBinary.mimeType || 'image/jpeg';\n// 将二进制数据转换为Base64\nconst base64Image = imageBinary.data.toString('base64'); \n\n\n\n\n// 创建符合Qwen API要求的请求体\nconst requestBody ={\n  \"model\": \"qwen-vl-plus-2025-08-15\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": `data:${mimeType};base64,${base64Image}`\n          }\n        },\n        {\n          \"type\": \"text\",\n          \"text\": \"请用一句话描述这张T恤印花的核心要素：1.图案是什么？（主体）。1.是什么风格？（风格）。2.看起来怎么样？（氛围/感觉）。请用中文直接回答，无需客套话。\"\n        }\n      ]\n    }\n  ]\n};\n\nreturn {\n  json: {\n    qwenRequest: requestBody,\n    imageMimeType: mimeType\n  }\n};\n"
+        "jsCode": " \n// 从上一个节点获取二进制图片数据\nconst imageBinary =$input.first().binary.data;\n\nif (!imageBinary) {\n  throw new Error(\"没有获取到图片数据，请检查上一个节点的配置\");\n}\n\n// 获取图片MIME类型\nconst mimeType = imageBinary.mimeType || 'image/jpeg';\n// 将二进制数据转换为Base64\nconst base64Image = imageBinary.data.toString('base64'); \n\n\n\n\n// 创建符合Qwen API要求的请求体\nconst requestBody ={\n  \"model\": \"qwen-vl-plus\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": `data:${mimeType};base64,${base64Image}`\n          }\n        },\n        {\n          \"type\": \"text\",\n          \"text\": \"请用一句话描述这张T恤印花的核心要素：1.图案是什么？（主体）。1.是什么风格？（风格）。2.看起来怎么样？（氛围/感觉）。请用中文直接回答，无需客套话。\"\n        }\n      ]\n    }\n  ]\n};\n\nreturn {\n  json: {\n    qwenRequest: requestBody,\n    imageMimeType: mimeType\n  }\n};\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1888,
-        -16
+        -464,
+        1216
       ],
-      "id": "1721161b-745f-4721-97c7-1ee9d5e994c0",
+      "id": "e80443cf-3811-4b8f-98ca-58ba8eb74cfc",
       "name": "Code4"
     },
     {
@@ -451,10 +462,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1664,
-        -16
+        -672,
+        1248
       ],
-      "id": "f9942e68-0348-410d-a715-b23cb5a571a3",
+      "id": "fb537504-b366-4a2c-8f6e-5ba235d0bd93",
       "name": "If5",
       "notes": "判断是否有图片"
     },
@@ -467,10 +478,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1360,
-        -48
+        -992,
+        1120
       ],
-      "id": "0c37f52e-d04b-4331-a318-17717b37b003",
+      "id": "643db3ad-9d79-4bc5-99a4-108ab5ddc33d",
       "name": "Sticky Note2"
     },
     {
@@ -482,10 +493,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        4256,
-        -144
+        1632,
+        704
       ],
-      "id": "e6f21880-9154-473b-a06e-54295cf4539d",
+      "id": "22fb1b38-78b7-4928-91c0-c3d2551739a6",
       "name": "WB-n8n-add2"
     },
     {
@@ -496,10 +507,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        3360,
-        -144
+        784,
+        704
       ],
-      "id": "fd7bd9df-d4be-44c4-81d2-926b0601d36b",
+      "id": "e11bf0c6-359d-4e24-9f26-92daa9400dad",
       "name": "WB-n8n-add"
     },
     {
@@ -525,19 +536,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        976,
-        -96
+        -1344,
+        1216
       ],
-      "id": "970c56cb-4fce-4d5d-ab9f-7a7abc7c4243",
+      "id": "25790a1c-b43e-463f-a661-77d015b2f850",
       "name": "产品卡列表",
       "retryOnFail": true,
-      "maxTries": 5,
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "Q1Z0EXSyJn6ojM4C",
-          "name": "WB04"
-        }
-      }
+      "maxTries": 5
     },
     {
       "parameters": {
@@ -546,10 +551,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        784,
-        -80
+        -1536,
+        1216
       ],
-      "id": "1c9f2f38-e1f6-489d-82a7-d45202c45bad",
+      "id": "f348a367-d6bf-40d7-9cee-2ad43f6b2307",
       "name": "Code12"
     },
     {
@@ -579,10 +584,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1184,
-        -128
+        -1168,
+        1216
       ],
-      "id": "a2acd42a-cbd8-46a0-ac65-0948f604eda8",
+      "id": "3b0333cc-8458-4186-b6b2-efc8944ef88f",
       "name": "If1"
     },
     {
@@ -594,41 +599,11 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        720,
-        -224
+        -1584,
+        1168
       ],
-      "id": "87e2ec8b-9205-469c-b7ba-e8d5f0ab6b0f",
+      "id": "97b02e2a-8ff1-4ae1-b122-987d8f778d03",
       "name": "Sticky Note3"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://content-api.wildberries.ru/content/v2/cards/upload",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "=[{{ $json.toJsonString() }}]",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        3136,
-        -16
-      ],
-      "id": "65df742e-f074-4e43-aed8-a1730c572567",
-      "name": "添加产品",
-      "retryOnFail": false,
-      "alwaysOutputData": false,
-      "executeOnce": false,
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "Q1Z0EXSyJn6ojM4C",
-          "name": "WB04"
-        }
-      },
-      "onError": "continueRegularOutput"
     }
   ],
   "connections": {
@@ -687,6 +662,17 @@
         ]
       ]
     },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "WB-n8n-add",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Loop Over Items2": {
       "main": [
         [],
@@ -703,7 +689,7 @@
       "main": [
         [
           {
-            "node": "添加产品",
+            "node": "HTTP Request2",
             "type": "main",
             "index": 0
           }
@@ -817,7 +803,8 @@
             "type": "main",
             "index": 0
           }
-        ]
+        ],
+        []
       ]
     },
     "读取图片": {
@@ -947,35 +934,22 @@
           }
         ]
       ]
-    },
-    "添加产品": {
-      "main": [
-        [
-          {
-            "node": "WB-n8n-add",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "meta": null,
   "pinData": {},
-  "versionId": "cce9ea49-0832-4db3-9cbe-f0987e4ececa",
+  "versionId": "31330ddb-1a60-42a5-bfec-9e5b56ccd215",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-10-09T14:12:28.662Z",
-      "updatedAt": "2025-10-09T14:12:28.662Z",
+      "createdAt": "2025-10-08T16:28:49.881Z",
+      "updatedAt": "2025-10-08T16:28:49.881Z",
       "role": "workflow:owner",
-      "workflowId": "ykLMI31Jm7miEoFH",
+      "workflowId": "0Cy04HeC2ZjcKqpO",
       "projectId": "xHmqnCOXuqzbutmT"
     }
   ],
