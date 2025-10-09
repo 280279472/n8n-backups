@@ -1,0 +1,584 @@
+{
+  "createdAt": "2025-10-09T14:16:54.161Z",
+  "updatedAt": "2025-10-09T14:20:01.000Z",
+  "id": "ASzuNbBF0vl33PK0",
+  "name": "WB04-添加图片",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "5beca553-f27f-4d32-849c-102ab38599c3",
+      "name": "When clicking \"Test workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -1744,
+        272
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n    \"apiKey\": {\n        \"txt\": \"API-密钥\",\n        \"HeaderApiKey\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjUwNTIwdjEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTc2NDg4MjQ4NCwiaWQiOiIwMTk3M2Y1OC1mNmQ2LTdiMDgtYmExYi00ZGJjYWI2MmExNGMiLCJpaWQiOjE1MDc4MzM4NSwib2lkIjo0MDg5NTQ0LCJzIjo3OTM0LCJzaWQiOiJlMTUxNTJkZS1lMjMwLTQ1N2QtOWUwMC1hMTFhYWRmNTZjOTAiLCJ0IjpmYWxzZSwidWlkIjoxNTA3ODMzODV9.34N6qRrBjBpMSlyFTu0dXuEyA8itC_frfa6JvP6InFu3MRuAXFhTMYWWgKuoJr6GW3HlDcZew_k6GTbOtFtDnw\",\n        \"data\": \"\"\n    },\n    \"campaign\": {\n        \"txt\": \"分享秘钥是否正常\",\n        \"url\": \"https://common-api.wildberries.ru/ping\",\n        \"data\": {}\n    },\n  \"WB-n8n\":\"D:/产品/本土/主推产品/WB/服装/模板/WB-n8n.xlsx\",\n  \"WB-n8n2\":\"D:/产品/本土/主推产品/WB/服装/模板/WB-n8n2.xlsx\",\n  \"WB-n8n3\":\"D:/产品/本土/主推产品/WB/服装/模板/WB-n8n.xlsx\",\n  \"WB-n8n4\":\"D:/产品/本土/主推产品/WB/服装/模板/WB-n8n2.xlsx\",\n    \"productList\": {\n        \"txt\": \"产品列表\",\n        \"url\": \"https://content-api.wildberries.ru/content/v2/get/cards/list\",\n        \"query\": {\n            \"sort\": [\n                {\n                    \"columnID\": 11,\n                    \"order\": \"desc\"\n                }\n            ],\n            \"filter\": {\n                \"search\": \"\",\n                \"paidOptions\": {},\n                \"subjectIDs\": [\n                    192\n                ]\n            },\n            \"cursor\": {\n                \"n\": 20\n            }\n        },\n        \"data\": {}\n    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1520,
+        272
+      ],
+      "id": "d2b9f0f8-26d4-41cd-96bb-7ebf06402bad",
+      "name": "基础数据"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.campaign.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1296,
+        272
+      ],
+      "id": "07178873-7f41-4fc1-92d8-8f36aed8beae",
+      "name": "验证指令",
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q1Z0EXSyJn6ojM4C",
+          "name": "WB04"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://content-api.wildberries.ru/content/v2/get/cards/list",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "locale",
+              "value": "zh"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -848,
+        272
+      ],
+      "id": "914069da-8458-416b-8e1a-c479b013d4d6",
+      "name": "产品卡列表3",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q1Z0EXSyJn6ojM4C",
+          "name": "WB04"
+        }
+      },
+      "notes": "0— 仅限不带照片的卡片\n1— 仅限带有照片的卡片\n-1— 所有卡片"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nconst imgData = [] \n \nfor (const item of $input.first().json.cards) {\n  const nmId=item.nmID;\n  const vendorCode = item.vendorCode\n  let imgUrl=[]\n  if (JSON.stringify(item.characteristics).includes(\"白色\")) { \n    imgUrl=[\"http://hbxc.zone.id/images/\"+vendorCode+\"-1A-1.jpg\",\"https://basket-27.wbbasket.ru/vol5040/part504096/504096916/images/big/2.webp\",\"https://basket-27.wbbasket.ru/vol5040/part504096/504096916/images/big/3.webp\",\"https://basket-27.wbbasket.ru/vol5040/part504096/504096916/images/big/4.webp\"] \n  } else {\n     imgUrl=[\"https://hbxc.zone.id/images/\"+vendorCode+\"-0A-1.jpg\",\"http://hbxc.zone.id/images/03-0.jpg\",\"https://basket-27.wbbasket.ru/vol5040/part504096/504096916/images/big/3.webp\",\"https://basket-27.wbbasket.ru/vol5040/part504096/504096916/images/big/4.webp\"] \n  } \n  imgData.push({nmId:nmId,data:imgUrl})  \n}\n\nreturn imgData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        272
+      ],
+      "id": "446f7bba-e7bf-4bd7-b30b-3ab1e54043ab",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst data = {\n  \"settings\": {\n    \"sort\": {\n      \"ascending\": false\n    },\n    \"filter\": {  \n      \"withPhoto\": 0\n    },\n    \"cursor\": {   \n      \"limit\": 40\n    }\n  }\n}\n\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        272
+      ],
+      "id": "c5273975-7ab4-4ff0-9610-915b68b8b155",
+      "name": "Code9",
+      "notes": "0— 仅限不带照片的卡片\n1— 仅限带有照片的卡片\n-1— 所有卡片"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://content-api.wildberries.ru/content/v3/media/save",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        48,
+        288
+      ],
+      "id": "e8c39a24-7567-4a9b-84c9-00fa71b48fb1",
+      "name": "添加图片",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q1Z0EXSyJn6ojM4C",
+          "name": "WB04"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -160,
+        272
+      ],
+      "id": "8839d556-e35b-4f69-b7fc-71af7d59eb0b",
+      "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        288
+      ],
+      "id": "d9db0873-8e75-43a0-8c74-7083dc21eaca",
+      "name": "Wait1",
+      "webhookId": "29322ea0-976b-4e07-9da4-7347ae43fce0"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a1d47430-23e7-4755-b6ce-f3036d38cb1d",
+              "leftValue": "={{ $json.cursor.total }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -608,
+        272
+      ],
+      "id": "384664b2-f53b-461b-98b0-ab608e3c4c47",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "content": "## 添加图片\n重复查询没有图片的商品卡，100条为一批，进行添加图片\n",
+        "height": 292,
+        "width": 680
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        176
+      ],
+      "id": "65a2cce2-09e4-466c-a38d-c56f81ad2aba",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://marketplace-api.wildberries.ru/api/v3/stocks/984080",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        272,
+        -32
+      ],
+      "id": "dd128188-89a3-4882-aafd-8dea1805826f",
+      "name": "添加库存",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q1Z0EXSyJn6ojM4C",
+          "name": "WB04"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data= {\"stocks\": []}\n\nfor (const element of $('产品卡列表3').first().json.cards) {\n  for (const element2 of element.sizes) { \n      data.stocks.push({\"sku\": element2.skus[0],\"amount\": 50}) \n    } \n}\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        -32
+      ],
+      "id": "9ad2e306-7a45-4627-9029-d6c16b61fd46",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataTask = {  \"data\": [  ]  }\n\nfor (const item of $input.first().json.data.listGoods) {\n  const data2 = { \n      \"nmID\": item.nmID,\n      \"price\": 300,\n      \"discount\": 82\n  }\n  dataTask.data.push(data2)\n}\n\nreturn dataTask;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        240
+      ],
+      "id": "51c9e6c2-53d2-470e-82e7-d53c5cbc3134",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discounts-prices-api.wildberries.ru/api/v2/upload/task",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1184,
+        320
+      ],
+      "id": "bda85895-25c5-4539-addb-945f053226b9",
+      "name": "添加价格",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q1Z0EXSyJn6ojM4C",
+          "name": "WB04"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dataTask = {  \"nmList\": [   ]  } \n\nfor (const item of $('产品卡列表3').first().json.cards) {\n   dataTask.nmList.push(item.nmID) \n}\n \n\nreturn dataTask;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        240
+      ],
+      "id": "9f77e419-aafc-4014-9bd8-e6acf1fabde0",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discounts-prices-api.wildberries.ru/api/v2/list/goods/filter",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        752,
+        240
+      ],
+      "id": "3a4451c8-5ccb-48c1-baae-1c7051425660",
+      "name": "获取产品价格",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Q1Z0EXSyJn6ojM4C",
+          "name": "WB04"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 添加库存\n",
+        "height": 240,
+        "width": 464
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -112
+      ],
+      "id": "37d2ca0b-3495-4fa2-a2c2-ea94f80f918e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 添加价格",
+        "height": 288,
+        "width": 896
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        176
+      ],
+      "id": "459dfe06-0692-4e6b-9b17-03be96158a3a",
+      "name": "Sticky Note2"
+    }
+  ],
+  "connections": {
+    "When clicking \"Test workflow\"": {
+      "main": [
+        [
+          {
+            "node": "基础数据",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "基础数据": {
+      "main": [
+        [
+          {
+            "node": "验证指令",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "验证指令": {
+      "main": [
+        [
+          {
+            "node": "Code9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "产品卡列表3": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code9": {
+      "main": [
+        [
+          {
+            "node": "产品卡列表3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "添加图片",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "添加图片": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "添加库存": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "添加库存",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "添加价格",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "添加价格": {
+      "main": [
+        [
+          {
+            "node": "Code9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "获取产品价格",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取产品价格": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "1d64ce36-cbd9-4d07-beab-ec6246892605",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-09T14:16:54.169Z",
+      "updatedAt": "2025-10-09T14:16:54.169Z",
+      "role": "workflow:owner",
+      "workflowId": "ASzuNbBF0vl33PK0",
+      "projectId": "xHmqnCOXuqzbutmT"
+    }
+  ],
+  "tags": []
+}
